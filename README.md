@@ -1,6 +1,8 @@
 Example Voting App
 =========
 
+This is an example on how to use properly a pull request.
+
 Getting started
 ---------------
 
