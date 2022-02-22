@@ -1,13 +1,14 @@
 pipeline {
     
-    agent { 
-    	docker { 
-		image 'node:8.9.0-alpine'
-		}
-	}
+    agent none
 
     stages{
         stage('build'){
+	    agent { 
+		docker { 
+			image 'node:8.9.0-alpine'
+			}
+		}
 	    when{
 		changeset "**/result/**"
 		}
@@ -20,6 +21,11 @@ pipeline {
             }
         }
         stage('test'){
+	    agent { 
+		docker { 
+			image 'node:8.9.0-alpine'
+			}
+		}
 	    when{
 		changeset "**/result/**"
 		}
@@ -28,6 +34,23 @@ pipeline {
 		dir('worker'){
 			sh 'npm install'
 			sh 'npm test'
+		}
+            }
+        }
+        stage('docker-package'){
+	    agent any
+	    when{
+	    	branch 'master'
+		changeset "**/result/**"
+		}
+            steps{
+                echo 'Package result app with docker.'
+		script {
+			docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-baugereau') {
+				def workerImage = docker.build("baugereau/result:v${env.BUILD_ID}", "./result")
+				workerImage.push()
+				workerImage.push("result")
+			}
 		}
             }
         }
