@@ -49,7 +49,7 @@ pipeline {
 			docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-baugereau') {
 				def workerImage = docker.build("baugereau/result:v${env.BUILD_ID}", "./result")
 				workerImage.push()
-				workerImage.push("result")
+				workerImage.push("latest-result")
 			}
 		}
             }
