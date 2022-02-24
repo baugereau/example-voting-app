@@ -180,7 +180,21 @@ pipeline {
         }
 
       }
-    }
+ 
+    stage('integration-test-vote') {
+      agent any 
+      when {
+        changeset '**/vote/**'
+	branch 'master'
+      }
+      steps {
+        echo 'Running integration test on vote app.'
+        dir(path: 'vote') {
+          sh 'integration_test.sh'
+        }
+
+      }
+    }   }
 
     stage('docker-package-vote') {
       agent any
@@ -201,6 +215,7 @@ pipeline {
       }
     }
 
+/*
     stage('Sonarqube') {
       agent any
       when{
@@ -231,6 +246,7 @@ pipeline {
             }
         }
     }
+*/
 
     stage('Deploy to Dev') {
       agent any
