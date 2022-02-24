@@ -180,6 +180,7 @@ pipeline {
         }
 
       }
+      } 
  
     stage('integration-test-vote') {
       agent any 
@@ -194,7 +195,7 @@ pipeline {
         }
 
       }
-    }   }
+    }  
 
     stage('docker-package-vote') {
       agent any
