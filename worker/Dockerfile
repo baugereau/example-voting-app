@@ -1,12 +1,9 @@
-FROM maven:3.6.1-jdk-8-alpine
-
-WORKDIR /app 
-
+FROM baugereau/worker-base:latest AS build
+WORKDIR /code
 COPY . . 
+RUN mvn package -DskiptTests
 
-RUN mvn  package -DskiptTests && \
-	mv target/worker-jar-with-dependencies.jar /run/worker.jar && \
-	rm -rf *
-
-CMD java -jar /run/worker.jar
-
+FROM openjdk:8-jre-alpine AS package
+WORKDIR /run
+COPY --from=build /code/target/worker-jar-with-dependencies.jar worker.jar
+CMD java -jar worker.jar
